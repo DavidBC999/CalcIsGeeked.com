@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CalcIsGeeked.com | Master Calculus</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #3b82f6;
+            --primary-glow: rgba(59, 130, 246, 0.5);
+            --bg: #030712;
+            --card: #111827;
+            --text: #f9fafb;
+            --text-dim: #9ca3af;
+            --border: #374151;
+            --accent: #8b5cf6;
+            --success: #10b981;
+            --error: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+
+        /* --- UI Elements --- */
+        .glass {
+            background: rgba(17, 24, 39, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px var(--primary-glow);
+            opacity: 0.95;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        /* --- Navigation --- */
+        nav {
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .points-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(139, 92, 246, 0.15);
+            padding: 8px 16px;
+            border-radius: 99px;
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .info-circle {
+            width: 18px;
+            height: 18px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            cursor: pointer;
+            margin-left: 8px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        .info-circle:hover {
+            transform: scale(1.1);
+        }
+
+        /* --- Layout Structures --- */
+        .page {
+            display: none;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- Rank Polish --- */
+        #nav-rank-display,
+        #looksmax-rank,
+        #hero-rank-display {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        #nav-rank-display:hover,
+        #looksmax-rank:hover,
+        #hero-rank-display:hover {
+            transform: scale(1.1) translateY(-2px);
+            filter: brightness(1.3);
+            text-shadow: 0 0 30px var(--rank-color) !important;
+        }
+
+        /* --- Home Page --- */
+        .hero {
+            text-align: center;
+            padding: 80px 0;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            color: var(--text);
+        }
+
+        .hero p {
+            color: var(--text-dim);
+            font-size: 1.25rem;
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+
+        /* --- Rank Modal --- */
+        #rank-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .rank-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- Topic Grid --- */
+        .topic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .topic-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .topic-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            background: #1f2937;
+        }
+
+        .topic-card h3 {
+            margin-bottom: 12px;
+            font-size: 1.4rem;
+        }
+
+        .topic-card p {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .topic-card .badge {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: rgba(139, 92, 246, 0.2);
+            color: var(--accent);
+            display: inline-block;
+            margin-bottom: 12px;
+        }
+
+        /* --- Quiz Section --- */
+        .quiz-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 40px;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .question-box {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        .option {
+            display: block;
+            width: 100%;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1rem;
+        }
+
+        .option:hover:not(:disabled) {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: var(--primary);
+            padding-left: 28px;
+        }
+
+        .option.correct {
+            background: #064e3b !important;
+            border-color: var(--success) !important;
+        }
+
+        .option.incorrect {
+            background: #7f1d1d !important;
+            border-color: var(--error) !important;
+        }
+
+        #feedback-box {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            display: none;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* --- Login Portal --- */
+        .login-card {
+            max-width: 450px;
+            margin: 60px auto;
+            padding: 40px;
+            border-radius: 24px;
+            text-align: center;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(59, 130, 246, 0.05);
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        /* --- Footer --- */
+        footer {
+            margin-top: auto;
+            padding: 40px;
+            text-align: center;
+            border-top: 1px solid var(--border);
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="glass">
+        <a href="#" class="logo" onclick="showDashboard()">
+            <span style="background: var(--primary); color: white; padding: 2px 8px; border-radius: 6px;">∫</span>
+            CalcIsGeeked
+        </a>
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <button class="btn-outline"
+                style="padding: 6px 16px; font-size: 0.8rem; font-weight: 600; border-radius: 99px;"
+                onclick="showRooms()">ROOMS</button>
+            <div id="nav-rank-display"
+                style="font-weight: 800; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase;">CHUD</div>
+            <div class="points-display">
+                <span id="geek-credits">0</span> GEEK CREDITS
+                <span class="info-circle" onclick="toggleRankInfo()">i</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- RANK INFO MODAL -->
+    <div id="rank-modal" onclick="if(event.target == this) toggleRankInfo()">
+        <div class="glass"
+            style="max-width: 400px; width: 90%; padding: 30px; border-radius: 20px; position: relative;">
+            <h3 style="margin-bottom: 20px; color: var(--accent);">Calc Rank Requirements</h3>
+            <div id="rank-list">
+                <!-- Ranks will be injected here -->
+            </div>
+            <button class="btn" style="width: 100%; margin-top: 25px;" onclick="toggleRankInfo()">Got it</button>
+        </div>
+    </div>
+
+    <!-- LOGIN PAGE -->
+    <div id="login-page" class="page active">
+        <div class="login-card glass">
+            <div style="font-size: 3rem; margin-bottom: 10px;">🛡️</div>
+            <h2 style="margin-bottom: 10px; font-size: 1.8rem;">Initialize Geek Protocol</h2>
+            <p style="color: var(--text-dim); margin-bottom: 30px;">Enter your credentials to begin your calculus
+                ascension.</p>
+
+            <div class="input-group">
+                <label for="user-name">YOUR NAME</label>
+                <input type="text" id="user-name-input" placeholder="e.g. Gigamogger Dave">
+            </div>
+
+            <div class="input-group">
+                <label for="user-grade">YOUR GRADE</label>
+                <select id="user-grade-input">
+                    <option value="9">Grade 9</option>
+                    <option value="10">Grade 10</option>
+                    <option value="11">Grade 11</option>
+                    <option value="12">Grade 12</option>
+                    <option value="College">College / University</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
+
+            <button class="btn" style="width: 100%; margin-top: 10px;" onclick="handleLogin()">Confirm Identity</button>
+        </div>
+    </div>
+
+    <!-- HOME PAGE -->
+    <div id="home-page" class="page">
+        <div class="hero">
+            <div id="welcome-message"
+                style="color: var(--primary); font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">
+                WELCOME BACK, GEEK</div>
+            <h1 id="hero-title">Geek Your Way to an A</h1>
+            <button class="btn" onclick="showTopics()">Start Studying Now</button>
+        </div>
+
+        <div style="margin-top: 60px;">
+            <h2 style="text-align: center; margin-bottom: 30px;">Your Progress</h2>
+            <div style="display: flex; justify-content: center; gap: 40px;">
+                <div style="text-align: center;">
+                    <div style="font-size: 2.5rem; font-weight: 800; color: var(--primary);" id="total-problems">0</div>
+                    <div style="color: var(--text-dim);">Problems Solved</div>
+                </div>
+                <div style="text-align: center;">
+                    <div style="font-size: 2.5rem; font-weight: 800; color: var(--accent); text-transform: uppercase;"
+                        id="looksmax-rank">CHUD</div>
+                    <div style="color: var(--text-dim);">Calc Rank</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOPIC SELECTION -->
+    <div id="topics-page" class="page">
+        <div style="margin-bottom: 40px;">
+            <h2>Select a Topic</h2>
+            <p style="color: var(--text-dim);">Ascend the ranks. Each correct answer earns you 10 Geek Credits.</p>
+        </div>
+
+        <div class="topic-grid" id="topic-grid">
+            <!-- Topics injected via JS -->
+        </div>
+
+        <div style="margin-top: 40px; text-align: center;">
+            <button class="btn btn-outline" onclick="showDashboard()">Back to Home</button>
+        </div>
+    </div>
+
+    <!-- DIFFICULTY SELECTION -->
+    <div id="difficulty-page" class="page">
+        <div style="text-align: center; margin-bottom: 40px;">
+            <h2 id="diff-topic-title">Subject Name</h2>
+            <p style="color: var(--text-dim);">Select your challenge level.</p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 800px; margin: 0 auto;">
+            <div class="topic-card" onclick="startQuiz('easy')">
+                <span class="badge" style="background: #10b98122; color: #10b981;">EASY</span>
+                <h3>No-Brainer</h3>
+                <p>Fundamental concepts. Perfect for a quick credit boost.</p>
+            </div>
+            <div class="topic-card" onclick="startQuiz('medium')">
+                <span class="badge" style="background: #3b82f622; color: #3b82f6;">MEDIUM</span>
+                <h3>Standard Geek</h3>
+                <p>Typical exam-style problems. Requires focus.</p>
+            </div>
+            <div class="topic-card" onclick="startQuiz('hard')">
+                <span class="badge" style="background: #ef444422; color: #ef4444;">HARD</span>
+                <h3>Ascended</h3>
+                <p>Complex multiple steps. For true Gigamoggers only.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUIZ PAGE -->
+    <div id="quiz-page" class="page">
+        <div class="quiz-container">
+            <div class="quiz-header">
+                <div>
+                    <span id="current-topic-badge" class="badge"
+                        style="background: var(--accent); color: white; padding: 4px 12px; border-radius: 99px; font-size: 0.8rem; font-weight: 700;">TOPIC</span>
+                    <span id="diff-badge"
+                        style="margin-left:8px; font-size:0.7rem; font-weight:bold; color: var(--text-dim); text-transform:uppercase;">Difficulty</span>
+                    <div style="margin-top: 8px; color: var(--text-dim); font-size: 0.9rem;" id="quiz-progress-text">
+                        Question 1 of 5</div>
+                </div>
+                <button class="btn-outline" style="padding: 8px 16px;" onclick="showTopics()">Exit</button>
+            </div>
+
+            <div id="quiz-content">
+                <div class="question-box" id="question-text">Loading...</div>
+                <div id="options-container"></div>
+                <div id="feedback-box"></div>
+                <button id="next-btn" class="btn" style="display:none; width: 100%; margin-top: 20px;"
+                    onclick="nextQuestion()">Next Question</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SUMMARY PAGE -->
+    <div id="summary-page" class="page">
+        <div class="quiz-container" style="text-align: center;">
+            <h1 style="color: var(--success); margin-bottom: 10px;">Session Complete!</h1>
+            <p style="color: var(--text-dim); margin-bottom: 40px;">You've completed the <span id="summary-topic"
+                    style="color: white; font-weight: bold;"></span> study session.</p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px;">
+                <div class="glass" style="padding: 20px; border-radius: 12px;">
+                    <div style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 5px;">ACCURACY</div>
+                    <div style="font-size: 1.5rem; font-weight: 800;" id="summary-accuracy">0%</div>
+                </div>
+                <div class="glass" style="padding: 20px; border-radius: 12px;">
+                    <div style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 5px;">CREDITS EARNED</div>
+                    <div style="font-size: 1.5rem; font-weight: 800; color: var(--accent);" id="summary-credits">+0
+                    </div>
+                </div>
+            </div>
+
+            <div id="summary-message" style="margin-bottom: 30px; font-style: italic; color: var(--text-dim);"></div>
+
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button class="btn" onclick="showTopics()">New Topic</button>
+                <button class="btn btn-outline" onclick="showDashboard()">Home</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ROOMS PAGE -->
+    <div id="rooms-page" class="page">
+        <div class="hero" style="padding: 60px 0;">
+            <h1>Study Rooms</h1>
+
+            <div id="room-actions-view">
+                <div style="display: flex; gap: 20px; max-width: 600px; margin: 30px auto; justify-content: center;">
+                    <div class="input-group" style="flex: 1;">
+                        <label for="room-code-input"
+                            style="color: var(--primary); font-weight: 700; letter-spacing: 1px;">ROOM CODE</label>
+                        <input type="text" id="room-code-input" placeholder="e.g. nerd-squad">
+                    </div>
+                    <div id="room-name-container" class="input-group" style="flex: 1; display: none;">
+                        <label for="room-name-input"
+                            style="color: var(--accent); font-weight: 700; letter-spacing: 1px;">SET ROOM NAME</label>
+                        <input type="text" id="room-name-input" placeholder="e.g. The Calculords">
+                    </div>
+                </div>
+                <div style="display: flex; gap: 15px; justify-content: center;">
+                    <button class="btn" id="create-room-btn" onclick="createRoom()">Create Room</button>
+                    <button class="btn btn-outline" onclick="joinRoom()">Join Room</button>
+                </div>
+                <p style="margin-top: 15px; color: var(--text-dim); font-size: 0.8rem;">Note: Codes must be 4+
+                    characters.</p>
+            </div>
+
+        </div>
+
+        <div id="your-rooms-section"
+            style="margin-top: 20px; max-width: 1000px; margin-left: auto; margin-right: auto; text-align: left; padding: 0 20px 60px;">
+            <h3
+                style="margin-bottom: 20px; color: var(--primary); font-size: 1.2rem; font-weight: 700; letter-spacing: 1px;">
+                YOUR SAVED ROOMS</h3>
+            <div id="rooms-list-container" style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
+                <!-- Rooms will be injected here via JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 CalcIsGeeked.com - No Calculators Allowed.</p>
+    </footer>
+
+    <script>
+        const RANK_LEVELS = [
+            { name: 'CHUD', min: 0, color: '#9ca3af' },
+            { name: 'SUB3', min: 100, color: '#6b7280' },
+            { name: 'SUB5', min: 250, color: '#4b5563' },
+            { name: 'NORMIE', min: 500, color: '#3b82f6' },
+            { name: 'CHADLITE', min: 1000, color: '#8b5cf6' },
+            { name: 'TRUE ADAM', min: 2500, color: '#ec4899' },
+            { name: 'GIGAMOGGER', min: 5000, color: '#f59e0b' }
+        ];
+
+        const TOPICS = {
+            'riemann': {
+                title: 'Riemann Sums',
+                desc: 'Evaluate integrals using limits of sums (Right vs Left endpoints).',
+                difficulty: {
+                    easy: [
+                        { q: "For ∫₀¹ x³ dx, what is the width Δx using n sub-intervals?", options: ["1/n", "x/n", "1", "0"], correct: 0, rationale: "Δx = (b-a)/n = (1-0)/n = 1/n." },
+                        { q: "For ∫₃⁷ (3x² - 6) dx, what is the right endpoint formula cₖ?", options: ["3 + k(4/n)", "k(4/n)", "3 + 4/n", "7 - k(4/n)"], correct: 0, rationale: "cₖ = a + kΔx. Here a=3 and Δx=(7-3)/n = 4/n." },
+                        { q: "In the limit definition of ∫₀² (4 - x²) dx, what is Δx?", options: ["2/n", "4/n", "1/n", "2"], correct: 0, rationale: "Δx = (2-0)/n = 2/n." },
+                        { q: "Using Left Endpoints for ∫₀² (4 - x²) dx, what is the correct cₖ?", options: ["2(k-1)/n", "2k/n", "k/n", "(k-1)/n"], correct: 0, rationale: "For left endpoints, cₖ = a + (k-1)Δx = 0 + (k-1)(2/n)." },
+                        { q: "If f(x) = x³, what is the expression for f(cₖ) using right endpoints on [0, 1]?", options: ["(k/n)³", "k/n", "1/n³", "(k-1/n)³"], correct: 0, rationale: "cₖ = k/n, so f(cₖ) = (k/n)³." },
+                        { q: "If Δx = 0.5 and the interval is [1, 3], how many sub-intervals n are there?", options: ["4", "2", "6", "8"], correct: 0, rationale: "n = (b-a)/Δx = (3-1)/0.5 = 4." },
+                        { q: "For ∫₂⁵ f(x) dx with n=6, what is Δx?", options: ["0.5", "1", "3", "6"], correct: 0, rationale: "Δx = (b-a)/n = (5-2)/6 = 3/6 = 0.5." },
+                        { q: "The summation Σ f(cₖ) Δx is called a:", options: ["Riemann Sum", "Derivative Sum", "Limit Sum", "Infinite Sum"], correct: 0, rationale: "This is the classic definition named after Bernhard Riemann." },
+                        { q: "If we use n=4 rectangles to estimate area under y=x on [0, 4], Δx is:", options: ["1", "4", "0.5", "2"], correct: 0, rationale: "Δx = (4-0)/4 = 1." },
+                        { q: "True or False: As n approaches infinity, Left and Right Riemann sums for a continuous function converge to the same value.", options: ["True", "False", "Only for linear functions", "Never"], correct: 0, rationale: "This is the core principle of early integral calculus." }
+                    ],
+                    medium: [
+                        { q: "Which summation represents ∫₀¹ x³ dx using right endpoints?", options: ["Σ (k/n)³ * (1/n)", "Σ (k/n)³", "Σ (1/n)³ * (k/n)", "Σ x³ Δx"], correct: 0, rationale: "The sum is Σ f(cₖ)Δx = Σ (k/n)³(1/n)." },
+                        { q: "What is the value of ∫₀² (4 - x²) dx?", options: ["16/3", "4", "8", "0"], correct: 0, rationale: "Evaluated as [4x - x³/3] from 0 to 2 = 8 - 8/3 = 16/3." },
+                        { q: "Evaluate the Right Riemann Sum limit for ∫₀¹ x³ dx.", options: ["1/4", "1/3", "1/2", "1"], correct: 0, rationale: "lim (1/n⁴) * [n²(n+1)²/4] = 1/4." },
+                        { q: "For ∫₀² (4 - x²) dx, what is the term f(cₖ) using left endpoints?", options: ["4 - (2(k-1)/n)²", "4 - (2k/n)²", "(2k/n)²", "4 - k/n"], correct: 0, rationale: "cₖ = 2(k-1)/n, so f(cₖ) = 4 - (cₖ)²." },
+                        { q: "Which property allows us to take the limit as n → ∞ to find the exact area?", options: ["Continuity", "Differentiability", "Symmetry", "Linearly"], correct: 0, rationale: "Continuous functions are Riemann integrable." },
+                        { q: "Estimate ∫₀² x² dx using n=2 and Right Endpoints.", options: ["5", "4", "2", "3"], correct: 0, rationale: "Δx=1. Right endpoints are 1 and 2. Sum = (1² + 2²)(1) = 5." },
+                        { q: "Evaluate the Left Riemann Sum for f(x)=x on [1, 3] with n=2.", options: ["3", "4", "2", "5"], correct: 0, rationale: "Δx=1. Left endpoints are 1 and 2. Sum = (1 + 2)(1) = 3." },
+                        { q: "What is the summation Σ k²/n³ for k=1 to n as n→∞?", options: ["1/3", "1/2", "1/4", "1"], correct: 0, rationale: "This is the Riemann sum for ∫₀¹ x² dx, which is 1/3." },
+                        { q: "If ∫₀³ f(x) dx = 6, what is the limit of its Riemann sums as n→∞?", options: ["6", "0", "3", "Infinity"], correct: 0, rationale: "The definite integral is by definition the limit of the Riemann sums." },
+                        { q: "For a decreasing function, the Left Riemann Sum is an:", options: ["Overestimate", "Underestimate", "Exact area", "Undefined"], correct: 0, rationale: "Left endpoints on a decreasing function stay above the curve." }
+                    ],
+                    hard: [
+                        { q: "Evaluate ∫₃⁷ (3x² - 6) dx using the limit of Riemann sums.", options: ["292", "301", "250", "295"], correct: 0, rationale: "Integral is [x³ - 6x] from 3 to 7 = (343 - 42) - (27 - 18) = 301 - 9 = 292." },
+                        { q: "What is the limit of Σ (2/n) * [4 - (2k/n)²] as n → ∞?", options: ["16/3", "8", "4", "10"], correct: 0, rationale: "This corresponds to ∫₀² (4 - x²) dx = 16/3." },
+                        { q: "Using Σ k³ = n²(n+1)²/4, find the limit of (1/n⁴) Σ k³.", options: ["1/4", "0", "1", "1/2"], correct: 0, rationale: "The leading term is n⁴/4n⁴ = 1/4." },
+                        { q: "Express ∫₀¹ x³ dx using the midpoint rule cₖ.", options: ["Σ ( (k - 0.5)/n )³ * (1/n)", "Σ (k/n)³ * (1/n)", "Σ ((k-1)/n)³", "0.25"], correct: 0, rationale: "Midpoint is a + (k - 0.5)Δx." },
+                        { q: "Evaluate the limit of Σ (4/n) * [3(3 + 4k/n)² - 6] as n → ∞.", options: ["292", "300", "343", "0"], correct: 0, rationale: "This set-up represents ∫₃⁷ (3x² - 6) dx, which evaluates to 292." },
+                        { q: "Evaluate the limit as n→∞ of Σ (3/n) * √(1 + 3k/n).", options: ["14/3", "16/3", "2", "5"], correct: 0, rationale: "This is ∫₀³ √(1+x) dx. Integral is 2/3(1+x)^1.5. Evaluated at 3 is 14/3." },
+                        { q: "Express the area of a circle with radius R as a limit of Riemann sums for ∫₀ᴿ √(R²-x²) dx.", options: ["Σ (R/n)√(R² - (kR/n)²)", "Σ (1/n)√(1 - (k/n)²)", "πR²", "2πR"], correct: 0, rationale: "Setup for the area of a quadrant: Δx=R/n, cₖ=kR/n." },
+                        { q: "Find the exact value of the limit of Σ (k/n²) as n→∞.", options: ["1/2", "1", "0", "1/4"], correct: 0, rationale: "Factor out 1/n to get Σ (k/n)(1/n) = ∫₀¹ x dx = 1/2." },
+                        { q: "Which sum represents ∫₁⁴ √x dx using right endpoints?", options: ["Σ (3/n)√(1 + 3k/n)", "Σ (1/n)√(1 + k/n)", "Σ (3/n)√k", "Σ (4/n)√(k/n)"], correct: 0, rationale: "Δx = 3/n, cₖ = 1 + k(3/n)." },
+                        { q: "Evaluate the limit Σ (n / (n² + k²)) for k=1 to n as n→∞.", options: ["π/4", "1", "ln(2)", "0"], correct: 0, rationale: "Rewrite as Σ (1/n) * (1 / (1 + (k/n)²)). This is ∫₀¹ 1/(1+x²) dx." }
+                    ]
+                }
+            },
+            'integrals': {
+                title: 'Integrals',
+                desc: 'Antiderivatives, the Fundamental Theorem of Calculus, and area.',
+                difficulty: {
+                    easy: [
+                        { q: "What is the antiderivative of f(x) = x?", options: ["x²/2 + C", "2x + C", "x + C", "1 + C"], correct: 0, rationale: "Usage of the reverse power rule: x^(n+1)/(n+1)." },
+                        { q: "Evaluate ∫ dx from 0 to 5.", options: ["5", "0", "1", "x"], correct: 0, rationale: "The integral of 1 is x. Evaluated from 0 to 5 is 5-0=5." },
+                        { q: "Evaluate ∫ 3x² dx.", options: ["x³ + C", "3x³ + C", "6x + C", "3x + C"], correct: 0, rationale: "Power rule: 3 * (x³/3) = x³." },
+                        { q: "What is the indefinite integral of cos(x)?", options: ["sin(x) + C", "-sin(x) + C", "cos(x) + C", "tan(x) + C"], correct: 0, rationale: "The derivative of sin(x) is cos(x)." },
+                        { q: "According to FTC Part 2, ∫ f'(x) dx from a to b is:", options: ["f(b) - f(a)", "f(b)", "f(a)", "f'(b) - f'(a)"], correct: 0, rationale: "This is the core of the Fundamental Theorem of Calculus." }
+                    ],
+                    medium: [
+                        { q: "Evaluate ∫(3x² + 2x) dx.", options: ["x³ + x² + C", "3x³ + 2x² + C", "6x + 2 + C", "x³ + 2x² + C"], correct: 0, rationale: "Term by term integration: 3(x³/3) + 2(x²/2) = x³ + x²." },
+                        { q: "Evaluate ∫ (1/x) dx for x > 0.", options: ["ln(x) + C", "-1/x² + C", "e^x + C", "x + C"], correct: 0, rationale: "The integral of 1/x is the natural log of absolute x." },
+                        { q: "Evaluate ∫ e^(2x) dx.", options: ["0.5e^(2x) + C", "2e^(2x) + C", "e^(2x) + C", "e^x + C"], correct: 0, rationale: "Substitution rule: divide by the inner derivative (2)." },
+                        { q: "Evaluate ∫ sec²(x) dx.", options: ["tan(x) + C", "sec(x) + C", "cos(x) + C", "-tan(x) + C"], correct: 0, rationale: "Derivative of tan(x) is sec²(x)." },
+                        { q: "Find the area under y=x³ from 0 to 2.", options: ["4", "8", "2", "16"], correct: 0, rationale: "∫x³ dx = x⁴/4. Evaluated at 2: 16/4 = 4." }
+                    ],
+                    hard: [
+                        { q: "Evaluate ∫ x sin(x) dx.", options: ["-x cos(x) + sin(x) + C", "x cos(x) - sin(x) + C", "sin(x) + C", "-x sin(x) + C"], correct: 0, rationale: "Integration by parts: ∫u dv = uv - ∫v du. Let u=x, dv=sin(x)dx." },
+                        { q: "Evaluate ∫ ln(x) dx.", options: ["x ln(x) - x + C", "1/x + C", "ln(x)²/2 + C", "x ln(x) + C"], correct: 0, rationale: "Integration by parts with u=ln(x) and dv=dx." },
+                        { q: "Evaluate ∫ 1/(x² + 1) dx.", options: ["arctan(x) + C", "ln(x² + 1) + C", "arcsin(x) + C", "tan(x) + C"], correct: 0, rationale: "Standard inverse trig integral form." },
+                        { q: "What is the result of ∫ sin²(x) dx?", options: ["x/2 - sin(2x)/4 + C", "cos²(x) + C", "-sin(2x) + C", "x - cos(x) + C"], correct: 0, rationale: "Use power reduction identity: sin²(x) = (1 - cos(2x))/2." },
+                        { q: "Evaluate ∫ from 0 to infinity of e^(-x) dx.", options: ["1", "0", "Infinity", "e"], correct: 0, rationale: "Improper integral: lim [-e^-x] as x → ∞ is 0 - (-1) = 1." }
+                    ]
+                }
+            },
+            'optimization': {
+                title: 'Optimization',
+                desc: 'Real-world max/min problems. Geometry and business calculus.',
+                difficulty: {
+                    easy: [
+                        { q: "Find the critical point of f(x) = x² - 4x.", options: ["x=2", "x=4", "x=0", "x=-2"], correct: 0, rationale: "f'(x) = 2x - 4. Set 2x-4=0 → x=2." },
+                        { q: "If A = lw and l + w = 10, express A in terms of w.", options: ["w(10-w)", "10w", "w²", "10-w"], correct: 0, rationale: "Since l+w=10, l=10-w. Substitute into Area formula." },
+                        { q: "Derivative of Profit P(x) = Revenue - Cost is called:", options: ["Marginal Profit", "Total Profit", "Average Cost", "Revenue Rate"], correct: 0, rationale: "Marginal values are represented by derivatives." },
+                        { q: "A point where f'(x) = 0 or is undefined is called a:", options: ["Critical Point", "Inflection Point", "Maximum", "Tangent Point"], correct: 0, rationale: "Standard definition for finding extrema." },
+                        { q: "For f(x) = -x², the value x=0 is a:", options: ["Maximum", "Minimum", "Inflection Point", "Zero"], correct: 0, rationale: "Parabola opens down; vertex is the highest point." }
+                    ],
+                    medium: [
+                        { q: "A gardener has 20m of fencing for a rectangular plot. Max area?", options: ["25m²", "100m²", "20m²", "50m²"], correct: 0, rationale: "Perimeter 2w+2l=20 → w+l=10. Area = w(10-w). Max at w=5, Area=25." },
+                        { q: "Find two numbers whose sum is 10 and product is max.", options: ["5 and 5", "6 and 4", "7 and 3", "8 and 2"], correct: 0, rationale: "Product P = x(10-x). P' = 10-2x = 0 → x=5." },
+                        { q: "Minimize surface area of a box with fixed volume V and square base x.", options: ["x = ∛(2V)", "x = ∛V", "x = V/2", "x = 2V"], correct: 0, rationale: "S = x² + 4xh. Substitute h=V/x². S = x² + 4V/x. S' = 2x - 4V/x² = 0 → x³=2V." },
+                        { q: "Find the max value of f(x) = 10x - x².", options: ["25", "5", "10", "100"], correct: 0, rationale: "f'(x) = 10-2x → x=5. f(5)=50-25=25." },
+                        { q: "If f''(c) > 0 and f'(c) = 0, then c is a:", options: ["Local Minimum", "Local Maximum", "Inflection Point", "Saddle Point"], correct: 0, rationale: "Second Derivative Test: positive concavity means a 'cup' shape (minimum)." }
+                    ],
+                    hard: [
+                        { q: "Find dimensions of a 1L (1000cm³) cylinder with min surface area.", options: ["h = 2r", "h = r", "h = 4r", "h = r/2"], correct: 0, rationale: "Standard result: height = diameter minimizes area for a fixed volume." },
+                        { q: "Find the point on y=√x closest to (4, 0).", options: ["(3.5, √3.5)", "(4, 2)", "(3, √3)", "(0, 0)"], correct: 0, rationale: "Minimize d² = (x-4)² + x. (d²)' = 2x - 8 + 1 = 0 → x=3.5." },
+                        { q: "Optimizing a beam's strength S = khw². If diameter is D, find max S.", options: ["w = D/√3", "w = D/2", "w = D/√2", "w = D"], correct: 0, rationale: "Substitute h² = D² - w² into S. Differentiate and set to zero." },
+                        { q: "Find max area of a rectangle inscribed in a semicircle of radius R.", options: ["R²", "R²/2", "2R²", "πR²"], correct: 0, rationale: "Area = 2x * √(R² - x²). Max occurs when dimensions are in 2:1 ratio (width:height)." },
+                        { q: "Which theorem guarantees an absolute max/min on a closed interval?", options: ["Extreme Value Theorem", "Mean Value Theorem", "Rolle's Theorem", "Intermediate Value Theorem"], correct: 0, rationale: "EVT is the fundamental theoretical basis for optimization." }
+                    ]
+                }
+            },
+            'derivatives': {
+                title: 'Derivatives',
+                desc: 'Chain rule, product rule, and rates of change.',
+                difficulty: {
+                    easy: [
+                        { q: "What is d/dx of x⁵?", options: ["5x⁴", "x⁴", "5x⁶", "4x⁵"], correct: 0, rationale: "Power rule: nx^(n-1)." },
+                        { q: "Derivative of sin(x)?", options: ["cos(x)", "-cos(x)", "tan(x)", "sec²(x)"], correct: 0, rationale: "Basic trigonometric derivative identity." },
+                        { q: "Derivative of a constant (like 7)?", options: ["0", "1", "7", "x"], correct: 0, rationale: "Constants do not change, so their rate of change is zero." },
+                        { q: "d/dx [f(x) + g(x)] is equal to:", options: ["f'(x) + g'(x)", "f'(x)g'(x)", "f(x)g'(x)", "1"], correct: 0, rationale: "Sum rule for derivatives." },
+                        { q: "What is the derivative of e^x?", options: ["e^x", "xe^(x-1)", "ln(x)", "1/x"], correct: 0, rationale: "e^x is its own derivative." }
+                    ],
+                    medium: [
+                        { q: "Derivative of f(x) = sin(x²)?", options: ["2x cos(x²)", "cos(x²)", "2 cos(x)", "sin(2x)"], correct: 0, rationale: "Chain rule logic: cos(inner) * derivative of inner." },
+                        { q: "Find d/dx of x * ln(x).", options: ["ln(x) + 1", "1/x", "ln(x)", "x"], correct: 0, rationale: "Product rule: (1)ln(x) + x(1/x) = ln(x) + 1." },
+                        { q: "Derivative of tan(x)?", options: ["sec²(x)", "sec(x)tan(x)", "cos(x)", "1/cos(x)"], correct: 0, rationale: "Standard trig derivative result." },
+                        { q: "d/dx [f(g(x))] = ", options: ["f'(g(x)) * g'(x)", "f'(g'(x))", "f(g(x)) * g(x)", "f'(x)"], correct: 0, rationale: "This is the formal definition of the Chain Rule." },
+                        { q: "Find the slope of y = x² at x = 3.", options: ["6", "9", "3", "2"], correct: 0, rationale: "y' = 2x. At x=3, slope is 2(3)=6." }
+                    ],
+                    hard: [
+                        { q: "Derivative of f(x) = x^x?", options: ["x^x(ln x + 1)", "x*x^(x-1)", "x^x * ln x", "1"], correct: 0, rationale: "Use logarithmic differentiation: y = x^x → ln y = x ln x. Differentiate both sides." },
+                        { q: "Find dy/dx for x² + y² = 25.", options: ["-x/y", "x/y", "-2x/2y", "0"], correct: 0, rationale: "Implicit differentiation: 2x + 2yy' = 0 → y' = -x/y." },
+                        { q: "What is d/dx of inverse sin(x)?", options: ["1/√(1-x²)", "-1/√(1-x²)", "1/(1+x²)", "cos(x)"], correct: 0, rationale: "Standard derivative of arcsin(x)." },
+                        { q: "Find the second derivative of f(x) = ln(x).", options: ["-1/x²", "1/x", "1/x²", "-1/x"], correct: 0, rationale: "f'(x) = 1/x = x^-1. f''(x) = -1x^-2." },
+                        { q: "Derivative of f(x) = cos(sin(x))?", options: ["-sin(sin(x)) * cos(x)", "sin(cos(x))", "-sin(x)cos(x)", "-sin(sin(x))"], correct: 0, rationale: "Chain rule: -sin(inner) * derivative of inner." }
+                    ]
+                }
+            },
+            'limits': {
+                title: 'Limits',
+                desc: 'Continuity, infinity, and L\'Hôpital\'s Rule.',
+                difficulty: {
+                    easy: [
+                        { q: "Limit of 1/x as x approaches infinity?", options: ["0", "1", "Infinity", "Undefined"], correct: 0, rationale: "As the denominator grows infinitely large, the fraction approaches zero." },
+                        { q: "What is the limit of (5x + 2) as x approaches 1?", options: ["7", "5", "2", "1"], correct: 0, rationale: "Direct substitution: 5(1) + 2 = 7." },
+                        { q: "If lim f(x) = 3 and lim g(x) = 4, what is lim [f(x) + g(x)]?", options: ["7", "12", "1", "0"], correct: 0, rationale: "The limit of a sum is the sum of the limits." },
+                        { q: "A limit exists if:", options: ["Left and Right limits are equal", "The function is defined there", "The slope is zero", "It equals infinity"], correct: 0, rationale: "Equality of one-sided limits is the core requirement." },
+                        { q: "Evaluate lim (x² - 4) as x → 2.", options: ["0", "4", "2", "8"], correct: 0, rationale: "Direct substitution: 2² - 4 = 0." }
+                    ],
+                    medium: [
+                        { q: "Limit of (sin x)/x as x approaches 0?", options: ["1", "0", "Undefined", "Infinity"], correct: 0, rationale: "Fundamental trigonometric limit." },
+                        { q: "Evaluate lim (x² - 9)/(x - 3) as x → 3.", options: ["6", "3", "0", "Undefined"], correct: 0, rationale: "Factor as (x-3)(x+3)/(x-3). Limit is x+3 as x → 3, which is 6." },
+                        { q: "According to L'Hôpital's Rule, if a limit is 0/0, evaluate:", options: ["lim f'(x)/g'(x)", "lim f(x)/g(x)", "f'(x)/g'(x)", "0"], correct: 0, rationale: "L'Hôpital's uses derivatives of the numerator and denominator." },
+                        { q: "Evaluate lim (3x² + 5)/(2x² - 1) as x → ∞.", options: ["3/2", "Infinity", "0", "5/-1"], correct: 0, rationale: "Horizontal asymptote rule: ratio of leading coefficients for equal degrees." },
+                        { q: "Find lim (e^x - 1)/x as x → 0.", options: ["1", "0", "e", "Undefined"], correct: 0, rationale: "Using L'Hôpital's: lim e^x / 1. At 0, this is 1." }
+                    ],
+                    hard: [
+                        { q: "Limit of (1 + 1/n)^n as n approaches infinity?", options: ["e", "1", "0", "Infinity"], correct: 0, rationale: "The definition of the number e." },
+                        { q: "Evaluate lim (x - sin x)/x³ as x → 0.", options: ["1/6", "0", "1", "Undefined"], correct: 0, rationale: "Apply L'Hôpital's multiple times or use Taylor series expansion for sin(x)." },
+                        { q: "Limit of sin(1/x) as x approaches 0?", options: ["Does not exist", "0", "1", "Infinity"], correct: 0, rationale: "The function oscillates infinitely between -1 and 1 as it approaches zero." },
+                        { q: "Evaluate lim [√(x² + x) - x] as x → ∞.", options: ["1/2", "0", "1", "Infinity"], correct: 0, rationale: "Multiply by conjugate: (x² + x - x²) / (√(x² + x) + x). Approaches 1/2." },
+                        { q: "A function f is continuous at c if lim f(x) as x → c equals:", options: ["f(c)", "0", "Infinity", "f'(c)"], correct: 0, rationale: "The three-part definition of continuity requires the limit to equal the function value." }
+                    ]
+                }
+            }
+        };
+
+        let state = {
+            geekCredits: parseInt(localStorage.getItem('geekCredits')) || 0,
+            solvedCount: parseInt(localStorage.getItem('solvedCount')) || 0,
+            userName: localStorage.getItem('userName') || '',
+            userGrade: localStorage.getItem('userGrade') || '',
+            currentTopicId: null,
+            currentDifficulty: null,
+            currentQuestionIndex: 0,
+            sessionCorrect: 0,
+            sessionTotal: 0,
+            sessionCredits: 0,
+            rooms: JSON.parse(localStorage.getItem('rooms')) || [],
+            currentRoom: null
+        };
+
+        function handleLogin() {
+            const nameInput = document.getElementById('user-name-input').value.trim();
+            const gradeInput = document.getElementById('user-grade-input').value;
+
+            if (!nameInput) {
+                alert("Please enter your name, geek.");
+                return;
+            }
+
+            state.userName = nameInput;
+            state.userGrade = gradeInput;
+
+            localStorage.setItem('userName', nameInput);
+            localStorage.setItem('userGrade', gradeInput);
+
+            showDashboard();
+        }
+
+        function getRank(credits) {
+            for (let i = RANK_LEVELS.length - 1; i >= 0; i--) {
+                if (credits >= RANK_LEVELS[i].min) return RANK_LEVELS[i];
+            }
+            return RANK_LEVELS[0];
+        }
+
+        function toggleRankInfo() {
+            const modal = document.getElementById('rank-modal');
+            const isOpening = modal.style.display !== 'flex';
+            modal.style.display = isOpening ? 'flex' : 'none';
+
+            if (isOpening) {
+                const list = document.getElementById('rank-list');
+                list.innerHTML = RANK_LEVELS.map(r => `
+                <div class="rank-item">
+                    <span style="color: ${r.color}; font-weight: 800;">${r.name}</span>
+                    <span style="color: var(--text-dim);">${r.min}+ Credits</span>
+                </div>
+            `).join('');
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('geek-credits').innerText = state.geekCredits;
+            document.getElementById('total-problems').innerText = state.solvedCount;
+
+            if (state.userName) {
+                document.getElementById('welcome-message').innerText = `WELCOME BACK, ${state.userName.toUpperCase()}`;
+                const rInfo = getRank(state.geekCredits);
+                document.getElementById('hero-title').innerHTML = `Your Rank: <span id="hero-rank-display" style="--rank-color: ${rInfo.color}; color: ${rInfo.color}; text-shadow: 0 0 20px ${rInfo.color}88;">${rInfo.name}</span>`;
+            }
+
+            const rankInfo = getRank(state.geekCredits);
+            const rankEl = document.getElementById('looksmax-rank');
+            rankEl.innerHTML = rankInfo.name;
+            rankEl.style.setProperty('--rank-color', rankInfo.color);
+            rankEl.style.color = 'var(--rank-color)';
+            rankEl.style.textShadow = `0 0 20px ${rankInfo.color}88`;
+
+            const navRankEl = document.getElementById('nav-rank-display');
+            navRankEl.innerText = rankInfo.name;
+            navRankEl.style.setProperty('--rank-color', rankInfo.color);
+            navRankEl.style.color = 'var(--rank-color)';
+            navRankEl.style.textShadow = `0 0 10px ${rankInfo.color}44`;
+
+            localStorage.setItem('geekCredits', state.geekCredits);
+            localStorage.setItem('solvedCount', state.solvedCount);
+        }
+
+        function showDashboard() {
+            hidePages();
+            document.getElementById('home-page').classList.add('active');
+            updateStats();
+        }
+
+        function showRooms() {
+            hidePages();
+            document.getElementById('rooms-page').classList.add('active');
+            // Reset creation state
+            document.getElementById('room-name-container').style.display = 'none';
+            document.getElementById('create-room-btn').innerText = 'Create Room';
+            renderYourRooms();
+            updateStats();
+        }
+
+        function getMockLeaderboard(roomCode) {
+            const competitors = [];
+
+            competitors.push({
+                name: state.userName || "You",
+                credits: state.geekCredits,
+                isUser: true
+            });
+
+            return competitors;
+        }
+
+        function renderYourRooms() {
+            const container = document.getElementById('rooms-list-container');
+            if (!container) return;
+
+            container.innerHTML = '';
+
+            if (state.rooms.length === 0) {
+                container.innerHTML = `<p style="color: var(--text-dim); text-align: center; font-style: italic; padding: 20px;">No saved rooms yet.</p>`;
+                return;
+            }
+
+            state.rooms.forEach(roomObj => {
+                // Compatibility for old string-based rooms
+                const roomCode = typeof roomObj === 'string' ? roomObj : roomObj.code;
+                const roomName = typeof roomObj === 'string' ? roomObj : roomObj.name;
+
+                const leaderboard = getMockLeaderboard(roomCode);
+                const roomEl = document.createElement('div');
+                roomEl.className = 'glass';
+                roomEl.style.padding = '24px';
+                roomEl.style.borderRadius = '16px';
+                roomEl.style.width = '300px';
+                roomEl.style.flexShrink = '0';
+
+                let leaderboardHTML = `
+                    <table style="width: 100%; margin-top: 15px; border-collapse: collapse; font-size: 0.85rem;">
+                        <thead>
+                            <tr style="color: var(--text-dim); text-align: left; border-bottom: 1px solid var(--border);">
+                                <th style="padding-bottom: 8px;">NAME</th>
+                                <th style="padding-bottom: 8px;">RANK</th>
+                                <th style="padding-bottom: 8px; text-align: right;">CREDITS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                leaderboard.forEach(person => {
+                    const rankInfo = getRank(person.credits);
+                    leaderboardHTML += `
+                        <tr style="${person.isUser ? 'color: var(--primary); font-weight: 700;' : ''}">
+                            <td style="padding: 8px 0;">${person.name}${person.isUser ? ' (You)' : ''}</td>
+                            <td style="padding: 8px 0; color: ${rankInfo.color}; font-weight: 800; font-size: 0.75rem;">${rankInfo.name}</td>
+                            <td style="padding: 8px 0; text-align: right;">${person.credits}</td>
+                        </tr>
+                    `;
+                });
+
+                leaderboardHTML += `</tbody></table>`;
+
+                roomEl.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                        <div>
+                            <div style="font-weight: 800; font-size: 1.1rem; color: var(--text);">${roomName}</div>
+                            <div style="font-size: 0.7rem; color: var(--text-dim); text-transform: uppercase;">Code: ${roomCode}</div>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn-outline" style="padding: 6px 12px; font-size: 0.75rem; border-color: rgba(156, 163, 175, 0.3); color: var(--text-dim);" onclick="forgetRoom('${roomCode}')">✕</button>
+                        </div>
+                    </div>
+                    ${leaderboardHTML}
+                `;
+                container.appendChild(roomEl);
+            });
+        }
+
+        function joinExistingRoom(code) {
+            enterRoom(code);
+        }
+
+        function forgetRoom(code) {
+            if (confirm(`Leave this room?`)) {
+                state.rooms = state.rooms.filter(r => (typeof r === 'string' ? r : r.code) !== code);
+                localStorage.setItem('rooms', JSON.stringify(state.rooms));
+                if (state.currentRoom && (typeof state.currentRoom === 'string' ? state.currentRoom : state.currentRoom.code) === code) {
+                    leaveRoom();
+                }
+                renderYourRooms();
+            }
+        }
+
+        function createRoom() {
+            const codeInput = document.getElementById('room-code-input');
+            const nameInput = document.getElementById('room-name-input');
+            const nameContainer = document.getElementById('room-name-container');
+            const createBtn = document.getElementById('create-room-btn');
+
+            const code = codeInput.value.trim();
+
+            if (code.length <= 3) {
+                alert("Room code must be longer than 3 characters!");
+                return;
+            }
+
+            // Step 1: Reveal room name input
+            if (nameContainer.style.display === 'none') {
+                const existing = state.rooms.find(r => (typeof r === 'string' ? r : r.code) === code);
+                if (existing) {
+                    alert("A room with this code already exists in your list!");
+                    return;
+                }
+                nameContainer.style.display = 'block';
+                createBtn.innerText = 'Confirm Name & Create';
+                return;
+            }
+
+            // Step 2: Validate name and create
+            const name = nameInput.value.trim();
+            if (!name) {
+                alert("Please enter a name for your room!");
+                return;
+            }
+
+            const newRoom = { code, name };
+            state.rooms.push(newRoom);
+            localStorage.setItem('rooms', JSON.stringify(state.rooms));
+            enterRoom(newRoom);
+            renderYourRooms();
+
+            // Reset UI for next time
+            nameContainer.style.display = 'none';
+            createBtn.innerText = 'Create Room';
+        }
+
+        function joinRoom() {
+            const code = document.getElementById('room-code-input').value.trim();
+            if (code.length <= 3) {
+                alert("Room code must be longer than 3 characters!");
+                return;
+            }
+            const existing = state.rooms.find(r => (typeof r === 'string' ? r : r.code) === code);
+
+            if (existing) {
+                enterRoom(existing);
+            } else {
+                alert("This room code has not been created yet! Please use 'Create Room' to establish it first.");
+            }
+        }
+
+        function enterRoom(roomObj) {
+            state.currentRoom = roomObj;
+            // Simply clear inputs so user can join another or create one
+            const codeInput = document.getElementById('room-code-input');
+            const nameInput = document.getElementById('room-name-input');
+            if (codeInput) codeInput.value = '';
+            if (nameInput) nameInput.value = '';
+        }
+
+        function leaveRoom() {
+            state.currentRoom = null;
+            const codeInput = document.getElementById('room-code-input');
+            const nameInput = document.getElementById('room-name-input');
+            if (codeInput) codeInput.value = '';
+            if (nameInput) nameInput.value = '';
+
+            // Reset creation state
+            document.getElementById('room-name-container').style.display = 'none';
+            document.getElementById('create-room-btn').innerText = 'Create Room';
+        }
+
+        function showTopics() {
+            hidePages();
+            document.getElementById('topics-page').classList.add('active');
+            const grid = document.getElementById('topic-grid');
+            grid.innerHTML = '';
+
+            Object.keys(TOPICS).forEach(id => {
+                const t = TOPICS[id];
+                const card = document.createElement('div');
+                card.className = 'topic-card';
+                card.innerHTML = `
+                <span class="badge">CALC I / II</span>
+                <h3>${t.title}</h3>
+                <p>${t.desc}</p>
+                <div style="margin-top: 15px; font-weight: bold; color: var(--primary);">Choose Difficulty →</div>
+            `;
+                card.onclick = () => selectDifficulty(id);
+                grid.appendChild(card);
+            });
+        }
+
+        function selectDifficulty(topicId) {
+            state.currentTopicId = topicId;
+            hidePages();
+            document.getElementById('difficulty-page').classList.add('active');
+            document.getElementById('diff-topic-title').innerText = TOPICS[topicId].title;
+        }
+
+        function hidePages() {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        }
+
+        function startQuiz(diff) {
+            state.currentDifficulty = diff;
+            state.currentQuestionIndex = 0;
+            state.sessionCorrect = 0;
+            state.sessionCredits = 0;
+            state.sessionTotal = TOPICS[state.currentTopicId].difficulty[diff].length;
+
+            hidePages();
+            document.getElementById('quiz-page').classList.add('active');
+            document.getElementById('current-topic-badge').innerText = TOPICS[state.currentTopicId].title.toUpperCase();
+            document.getElementById('diff-badge').innerText = diff;
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const topic = TOPICS[state.currentTopicId];
+            const q = topic.difficulty[state.currentDifficulty][state.currentQuestionIndex];
+
+            document.getElementById('quiz-progress-text').innerText = `Question ${state.currentQuestionIndex + 1} of ${state.sessionTotal}`;
+            document.getElementById('question-text').innerText = q.q;
+
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            document.getElementById('feedback-box').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'none';
+
+            // Create shuffled options
+            const shuffledOptions = q.options.map((opt, i) => ({ text: opt, originalIndex: i }))
+                .sort(() => Math.random() - 0.5);
+
+            // Store the current correct index for use in checkAnswer
+            state.activeCorrectIndex = shuffledOptions.findIndex(o => o.originalIndex === q.correct);
+
+            shuffledOptions.forEach((optObj, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'option';
+                btn.innerText = optObj.text;
+                btn.onclick = () => checkAnswer(i);
+                container.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(index) {
+            const topic = TOPICS[state.currentTopicId];
+            const q = topic.difficulty[state.currentDifficulty][state.currentQuestionIndex];
+            const options = document.querySelectorAll('.option');
+            const feedback = document.getElementById('feedback-box');
+
+            options.forEach(opt => opt.disabled = true);
+
+            if (index === state.activeCorrectIndex) {
+                options[index].classList.add('correct');
+                let reward = (state.currentDifficulty === 'hard' ? 20 : state.currentDifficulty === 'medium' ? 15 : 10);
+                feedback.innerHTML = `<h4 style="color: var(--success);">Correct! +${reward} Credits</h4><p style="margin-top:5px; font-size:0.9rem;">${q.rationale}</p>`;
+                feedback.style.background = 'rgba(16, 185, 129, 0.1)';
+                feedback.style.border = '1px solid var(--success)';
+                state.geekCredits += reward;
+                state.sessionCredits += reward;
+                state.solvedCount += 1;
+                state.sessionCorrect += 1;
+                updateStats();
+            } else {
+                options[index].classList.add('incorrect');
+                options[state.activeCorrectIndex].classList.add('correct');
+                feedback.innerHTML = `<h4 style="color: var(--error);">Incorrect</h4><p style="margin-top:5px; font-size:0.9rem;">${q.rationale}</p>`;
+                feedback.style.background = 'rgba(239, 68, 68, 0.1)';
+                feedback.style.border = '1px solid var(--error)';
+            }
+
+            feedback.style.display = 'block';
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        function nextQuestion() {
+            state.currentQuestionIndex++;
+            if (state.currentQuestionIndex < state.sessionTotal) {
+                loadQuestion();
+            } else {
+                showSummary();
+            }
+        }
+
+        function showSummary() {
+            hidePages();
+            document.getElementById('summary-page').classList.add('active');
+            document.getElementById('summary-topic').innerText = TOPICS[state.currentTopicId].title;
+
+            const accuracy = Math.round((state.sessionCorrect / state.sessionTotal) * 100);
+            document.getElementById('summary-accuracy').innerText = accuracy + '%';
+            document.getElementById('summary-credits').innerText = '+' + state.sessionCredits;
+
+            let msg = "";
+            if (accuracy === 100) msg = "Absolute Gigamogger energy. Perfection.";
+            else if (accuracy >= 70) msg = "Strong geek work. True Adam status incoming.";
+            else msg = "Gotta geek harder. Back to the fundamentals.";
+            document.getElementById('summary-message').innerText = msg;
+        }
+
+        // Initialize
+        if (state.userName) {
+            showDashboard();
+        } else {
+            hidePages();
+            document.getElementById('login-page').classList.add('active');
+        }
+    </script>
+</body>
+
+</html>
