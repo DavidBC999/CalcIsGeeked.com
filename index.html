@@ -1105,9 +1105,12 @@
             state.sessionCorrect = 0;
             state.sessionCredits = 0;
 
-            // Get questions for this level and shuffle them
+            // Get questions for this level, shuffle them, and pick exactly 5
             const originalPool = TOPICS[state.currentTopicId].difficulty[diff];
-            state.sessionQuestions = [...originalPool].sort(() => Math.random() - 0.5);
+            state.sessionQuestions = [...originalPool]
+                .sort(() => Math.random() - 0.5)
+                .slice(0, 5);
+
             state.sessionTotal = state.sessionQuestions.length;
 
             hidePages();
