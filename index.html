@@ -644,7 +644,12 @@
                         { q: "For ∫₂⁵ f(x) dx with n=6, what is Δx?", options: ["0.5", "1", "3", "6"], correct: 0, rationale: "Δx = (b-a)/n = (5-2)/6 = 3/6 = 0.5." },
                         { q: "The summation Σ f(cₖ) Δx is called a:", options: ["Riemann Sum", "Derivative Sum", "Limit Sum", "Infinite Sum"], correct: 0, rationale: "This is the classic definition named after Bernhard Riemann." },
                         { q: "If we use n=4 rectangles to estimate area under y=x on [0, 4], Δx is:", options: ["1", "4", "0.5", "2"], correct: 0, rationale: "Δx = (4-0)/4 = 1." },
-                        { q: "True or False: As n approaches infinity, Left and Right Riemann sums for a continuous function converge to the same value.", options: ["True", "False", "Only for linear functions", "Never"], correct: 0, rationale: "This is the core principle of early integral calculus." }
+                        { q: "True or False: As n approaches infinity, Left and Right Riemann sums for a continuous function converge to the same value.", options: ["True", "False", "Only for linear functions", "Never"], correct: 0, rationale: "This is the core principle of early integral calculus." },
+                        { q: "For ∫ₐᵇ f(x) dx, what is the formula for Δx?", options: ["(b-a)/n", "(a+b)/n", "1/n", "b/a"], correct: 0, rationale: "Δx represents the width of each of the n sub-intervals." },
+                        { q: "Using n=5 on [0, 10], what is the value of Δx?", options: ["2", "5", "0.5", "1"], correct: 0, rationale: "Δx = (10-0)/5 = 2." },
+                        { q: "The 'Sum' in Riemann Sum is represented by which Greek letter?", options: ["Σ (Sigma)", "Δ (Delta)", "λ (Lambda)", "π (Pi)"], correct: 0, rationale: "Sigma is the standard mathematical notation for summation." },
+                        { q: "For a constant function f(x)=c on [a, b], any Riemann sum equals:", options: ["c(b-a)", "c/n", "c", "0"], correct: 0, rationale: "Σ f(cₖ)Δx = Σ c * Δx = c Σ Δx = c(b-a)." },
+                        { q: "If right endpoints use cₖ = a + kΔx, what is the very first endpoint used (k=1)?", options: ["a + Δx", "a", "b", "Δx"], correct: 0, rationale: "The first right endpoint is one width away from the start." }
                     ],
                     medium: [
                         { q: "Which summation represents ∫₀¹ x³ dx using right endpoints?", options: ["Σ (k/n)³ * (1/n)", "Σ (k/n)³", "Σ (1/n)³ * (k/n)", "Σ x³ Δx"], correct: 0, rationale: "The sum is Σ f(cₖ)Δx = Σ (k/n)³(1/n)." },
@@ -656,7 +661,12 @@
                         { q: "Evaluate the Left Riemann Sum for f(x)=x on [1, 3] with n=2.", options: ["3", "4", "2", "5"], correct: 0, rationale: "Δx=1. Left endpoints are 1 and 2. Sum = (1 + 2)(1) = 3." },
                         { q: "What is the summation Σ k²/n³ for k=1 to n as n→∞?", options: ["1/3", "1/2", "1/4", "1"], correct: 0, rationale: "This is the Riemann sum for ∫₀¹ x² dx, which is 1/3." },
                         { q: "If ∫₀³ f(x) dx = 6, what is the limit of its Riemann sums as n→∞?", options: ["6", "0", "3", "Infinity"], correct: 0, rationale: "The definite integral is by definition the limit of the Riemann sums." },
-                        { q: "For a decreasing function, the Left Riemann Sum is an:", options: ["Overestimate", "Underestimate", "Exact area", "Undefined"], correct: 0, rationale: "Left endpoints on a decreasing function stay above the curve." }
+                        { q: "For a decreasing function, the Left Riemann Sum is an:", options: ["Overestimate", "Underestimate", "Exact area", "Undefined"], correct: 0, rationale: "Left endpoints on a decreasing function stay above the curve." },
+                        { q: "Estimate area under y=x+1 on [0, 2] using n=2 and Left Endpoints.", options: ["3", "4", "2", "5"], correct: 0, rationale: "Δx=1. Left endpoints are 0 and 1. f(0)=1, f(1)=2. Sum = (1+2)*1 = 3." },
+                        { q: "If f(x) is strictly increasing, the Right Riemann Sum is always an:", options: ["Overestimate", "Underestimate", "Exact area", "Lower sum"], correct: 0, rationale: "Right endpoints capture the highest point of each interval for increasing functions." },
+                        { q: "Evaluate the sum Σ (1/n) from k=1 to n as n approaches infinity.", options: ["1", "0", "Infinity", "Undefined"], correct: 0, rationale: "This represents ∫₀¹ 1 dx = 1." },
+                        { q: "Which endpoint rule is typically most accurate for estimating the area of a linear function?", options: ["Midpoint", "Left", "Right", "They are all equal"], correct: 0, rationale: "Midpoint captures equal area above and below the line, canceling error." },
+                        { q: "For ∫₀ to π of sin(x) dx, with n=2, what is the Midpoint Riemann Sum?", options: ["π sin(π/4)", "1", "0", "π"], correct: 0, rationale: "Δx = π/2. Midpoints are π/4 and 3π/4. f(π/4)=sin(π/4). Sum = (sin(π/4)+sin(3π/4))*π/2 = 2*sin(π/4)*π/2." }
                     ],
                     hard: [
                         { q: "Evaluate ∫₃⁷ (3x² - 6) dx using the limit of Riemann sums.", options: ["292", "301", "250", "295"], correct: 0, rationale: "Integral is [x³ - 6x] from 3 to 7 = (343 - 42) - (27 - 18) = 301 - 9 = 292." },
@@ -668,7 +678,12 @@
                         { q: "Express the area of a circle with radius R as a limit of Riemann sums for ∫₀ᴿ √(R²-x²) dx.", options: ["Σ (R/n)√(R² - (kR/n)²)", "Σ (1/n)√(1 - (k/n)²)", "πR²", "2πR"], correct: 0, rationale: "Setup for the area of a quadrant: Δx=R/n, cₖ=kR/n." },
                         { q: "Find the exact value of the limit of Σ (k/n²) as n→∞.", options: ["1/2", "1", "0", "1/4"], correct: 0, rationale: "Factor out 1/n to get Σ (k/n)(1/n) = ∫₀¹ x dx = 1/2." },
                         { q: "Which sum represents ∫₁⁴ √x dx using right endpoints?", options: ["Σ (3/n)√(1 + 3k/n)", "Σ (1/n)√(1 + k/n)", "Σ (3/n)√k", "Σ (4/n)√(k/n)"], correct: 0, rationale: "Δx = 3/n, cₖ = 1 + k(3/n)." },
-                        { q: "Evaluate the limit Σ (n / (n² + k²)) for k=1 to n as n→∞.", options: ["π/4", "1", "ln(2)", "0"], correct: 0, rationale: "Rewrite as Σ (1/n) * (1 / (1 + (k/n)²)). This is ∫₀¹ 1/(1+x²) dx." }
+                        { q: "Evaluate the limit Σ (n / (n² + k²)) for k=1 to n as n→∞.", options: ["π/4", "1", "ln(2)", "0"], correct: 0, rationale: "Rewrite as Σ (1/n) * (1 / (1 + (k/n)²)). This is ∫₀¹ 1/(1+x²) dx." },
+                        { q: "Evaluate the limit Σ 1/(n+k) for k=1 to n as n approaches infinity.", options: ["ln(2)", "1", "0", "ln(1)"], correct: 0, rationale: "This is Σ (1/n) * (1 / (1 + k/n)), representing ∫₀¹ 1/(1+x) dx = ln(2)." },
+                        { q: "What is the limit of Σ k/(n² + k²) as n approaches infinity?", options: ["0.5 ln(2)", "π/4", "1", "1/2"], correct: 0, rationale: "Rewrite as Σ (1/n) * (k/n) / (1 + (k/n)²). This is ∫₀¹ x/(1+x²) dx = 0.5 ln(1+x²)." },
+                        { q: "Express ∫₀¹ eˣ dx as a formal limit of Riemann sums.", options: ["Σ (1/n) e^(k/n)", "Σ (1/n) e^k", "Σ e^(1/n)", "e - 1"], correct: 0, rationale: "Δx = 1/n, cₖ = k/n (for right endpoints)." },
+                        { q: "Find the limit of (1/n) Σ sin(kπ/n) as n approaches infinity.", options: ["2/π", "1/π", "1", "0"], correct: 0, rationale: "This is ∫₀¹ sin(πx) dx = [-cos(πx)/π] from 0 to 1 = 1/π - (-1/π) = 2/π." },
+                        { q: "Evaluate the limit (1/n) Σ √(k/n) for k=1 to n as n approaches infinity.", options: ["2/3", "1/2", "3/2", "1"], correct: 0, rationale: "This is ∫₀¹ √x dx = [2/3 x^1.5] from 0 to 1 = 2/3." }
                     ]
                 }
             },
@@ -1089,7 +1104,11 @@
             state.currentQuestionIndex = 0;
             state.sessionCorrect = 0;
             state.sessionCredits = 0;
-            state.sessionTotal = TOPICS[state.currentTopicId].difficulty[diff].length;
+
+            // Get questions for this level and shuffle them
+            const originalPool = TOPICS[state.currentTopicId].difficulty[diff];
+            state.sessionQuestions = [...originalPool].sort(() => Math.random() - 0.5);
+            state.sessionTotal = state.sessionQuestions.length;
 
             hidePages();
             document.getElementById('quiz-page').classList.add('active');
@@ -1099,8 +1118,7 @@
         }
 
         function loadQuestion() {
-            const topic = TOPICS[state.currentTopicId];
-            const q = topic.difficulty[state.currentDifficulty][state.currentQuestionIndex];
+            const q = state.sessionQuestions[state.currentQuestionIndex];
 
             document.getElementById('quiz-progress-text').innerText = `Question ${state.currentQuestionIndex + 1} of ${state.sessionTotal}`;
             document.getElementById('question-text').innerText = q.q;
@@ -1127,8 +1145,7 @@
         }
 
         function checkAnswer(index) {
-            const topic = TOPICS[state.currentTopicId];
-            const q = topic.difficulty[state.currentDifficulty][state.currentQuestionIndex];
+            const q = state.sessionQuestions[state.currentQuestionIndex];
             const options = document.querySelectorAll('.option');
             const feedback = document.getElementById('feedback-box');
 
